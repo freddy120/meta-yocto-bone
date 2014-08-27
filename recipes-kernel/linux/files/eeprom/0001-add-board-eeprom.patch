@@ -1,0 +1,27 @@
+From 6ebbbf4c36e971b4c19be9b68748531944025e01 Mon Sep 17 00:00:00 2001
+From: Mikhail Zakharov <mikhail.zakharov@cognitivesystems.com>
+Date: Wed, 27 Aug 2014 16:38:19 -0400
+Subject: [PATCH] add board eeprom
+
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index e3f27ec..f283ed9 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -220,6 +220,10 @@
+ 		reg = <0x24>;
+ 	};
+ 
++	baseboard_eeprom: baseboard_eeprom@50 {
++		compatible = "at,24c256";
++		reg = <0x50>;
++	};
+ };
+ 
+ /include/ "tps65217.dtsi"
+-- 
+1.9.1
+
