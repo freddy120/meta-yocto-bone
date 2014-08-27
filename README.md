@@ -4,7 +4,7 @@ meta-yocto-bone
 Support layer for using Yocto and BeagleBone Black 
 
 
-As of Yocto 1.6, BeagleBone is officially 'supported'. However, out-of-the-box functionality is missing features, found in official Angstrom and Debian images.
+As of Yocto 1.6, BeagleBone is officially 'supported'. However, out-of-the-box functionality is missing features, found in the official Angstrom and Debian images.
 
 This layer attempts to provide minimal feature-set to begin developing with BeagleBone and Yocto
 
