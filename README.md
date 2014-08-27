@@ -11,10 +11,10 @@ This layer attempts to provide some of the missing functionality by porting reci
 
 Provides
 ===============
-Gadget support
-LEDs
-Power button
-On-board EEPROM
+Gadget support  
+LEDs  
+Power button  
+On-board EEPROM  
 
 Use
 ===============
