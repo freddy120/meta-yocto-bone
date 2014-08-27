@@ -16,7 +16,7 @@ Provides
 * Power button  
 * On-board EEPROM  
 
-Use
+Usage
 ===============
 
 * add this layer to your conf/bblayers.conf file
