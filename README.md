@@ -19,7 +19,7 @@ Usage
 ===============
 
 * add this layer to your conf/bblayers.conf file
-* follow tutorial steps from https://www.yoctoproject.org/downloads/bsps/daisy16/beaglebone
+* follow the steps from https://www.yoctoproject.org/downloads/bsps/daisy16/beaglebone
 * use 'bitbake core-image-minimal' for building the filesystem
 
 Dependencies
