@@ -11,7 +11,7 @@ This layer attempts to provide some of the missing functionality by porting reci
 
 Provides
 ===============
-* Gadget support  
+* Ethernet over USB (g_ether or RNDIS Gadget)  
 * LEDs  
 * Power button  
 * On-board EEPROM  
