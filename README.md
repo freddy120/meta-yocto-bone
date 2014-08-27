@@ -4,10 +4,9 @@ meta-yocto-bone
 Support layer for using Yocto and BeagleBone Black 
 
 
+As of Yocto 1.6, BeagleBone is officially 'supported'. However, out-of-the-box functionality is missing features, found in official Angstrom and Debian images.
 
-As of Yocto 1.6, BeagleBone is officially 'supported'. However, out-of-the-box, some of the functionality is missing. 
-
-This layer attempts to provide some of the missing functionality by porting recipes from meta-beagleboard layer, RobertNelson's kernel-devel repo & others.
+This layer attempts to provide minimal feature-set to begin developing with BeagleBone and Yocto
 
 Provides
 ===============
@@ -20,7 +19,8 @@ Usage
 ===============
 
 * add this layer to your conf/bblayers.conf file
-* bitbake core-image-minimal
+* follow tutorial steps from https://www.yoctoproject.org/downloads/bsps/daisy16/beaglebone
+* use 'bitbake core-image-minimal' for building the filesystem
 
 Dependencies
 ===============
