@@ -1,7 +1,7 @@
 From f2fd7a22aadbaf03683770e437e3d8dd9056e3ce Mon Sep 17 00:00:00 2001
 From: Mikhail Zakharov <mikhail.zakharov@cognitivesystems.com>
 Date: Wed, 27 Aug 2014 14:50:58 -0400
-Subject: [PATCH] tps-nmi
+Subject: [PATCH] dt-bone-common-Add-interrupt-for-PMIC
 
 ---
  arch/arm/boot/dts/am335x-bone-common.dtsi | 4 ++++
