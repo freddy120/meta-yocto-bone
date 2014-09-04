@@ -13,7 +13,8 @@ Provides
 * Ethernet over USB (g_ether or RNDIS Gadget)  
 * LEDs  
 * Power button  
-* On-board EEPROM  
+* On-board EEPROM
+* CPU Frequency switching and fix to 1GHz
 
 Usage
 ===============
