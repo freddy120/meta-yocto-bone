@@ -1,23 +1,42 @@
-From ec33e1842274e7c4d0c092585673bae590e4885e Mon Sep 17 00:00:00 2001
-From: Pantelis Antoniou <panto@antoniou-consulting.com>
-Date: Mon, 27 May 2013 17:14:23 +0300
-Subject: [PATCH 1/2] tps65217: Enable KEY_POWER press on AC loss / PWR_BUT
+From 2ab0fb6b5312518c68f694c2558c6e0c1f7486d7 Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Mon, 26 Jan 2015 14:15:54 -0600
+Subject: [PATCH 4/6] tps65217: Enable KEY_POWER press on AC loss / PWR_BUT
 
-Adaption of the original patch by Andrew Bradford <andrew.bradford@omni-id.com>
-Some minor devm_* changes and DT support.
+This is an adaption to v3.14.x of the original patch by Andrew Bradford <andrew.bradford@omni-id.com>
+Some minor devm_* changes and DT support done by Pantelis Antoniou <panto@antoniou-consulting.com> for 3.8.x
 
-Signed-off-by: Pantelis Antoniou <panto@antoniou-consulting.com>
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
 ---
- drivers/mfd/tps65217.c       | 121 ++++++++++++++++++++++++++++++++++++++++++-
- include/linux/mfd/tps65217.h |   6 +++
- 2 files changed, 125 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/am335x-bone-common.dtsi |   3 +
+ drivers/mfd/tps65217.c                    | 122 +++++++++++++++++++++++++++++-
+ include/linux/mfd/tps65217.h              |   5 ++
+ 3 files changed, 128 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index 0bad59a..01e7570 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -129,6 +129,9 @@
+ &tps {
+ 	ti,pmic-shutdown-controller;
+ 
++	interrupt-parent = <&intc>;
++	interrupts = <7>;	/* NNMI */
++
+ 	regulators {
+ 		dcdc1_reg: regulator@0 {
+ 			regulator-always-on;
 diff --git a/drivers/mfd/tps65217.c b/drivers/mfd/tps65217.c
-index b8f4864..818f2cd 100644
+index 4353047..2eb2f2c 100644
 --- a/drivers/mfd/tps65217.c
 +++ b/drivers/mfd/tps65217.c
-@@ -26,6 +26,9 @@
+@@ -24,9 +24,13 @@
+ #include <linux/slab.h>
+ #include <linux/regmap.h>
  #include <linux/err.h>
++#include <linux/input.h>
+ #include <linux/reboot.h>
  #include <linux/of.h>
  #include <linux/of_device.h>
 +#include <linux/of_irq.h>
@@ -26,50 +45,50 @@ index b8f4864..818f2cd 100644
  
  #include <linux/mfd/core.h>
  #include <linux/mfd/tps65217.h>
-@@ -153,6 +156,82 @@ static const struct of_device_id tps65217_of_match[] = {
+@@ -176,6 +180,82 @@ static const struct of_device_id tps65217_of_match[] = {
  	{ /* sentinel */ },
  };
  
 +static irqreturn_t tps65217_irq(int irq, void *irq_data)
 +{
-+        struct tps65217 *tps = irq_data;
-+        unsigned int int_reg = 0, status_reg = 0;
++	struct tps65217 *tps = irq_data;
++	unsigned int int_reg = 0, status_reg = 0;
 +
-+        tps65217_reg_read(tps, TPS65217_REG_INT, &int_reg);
-+        tps65217_reg_read(tps, TPS65217_REG_STATUS, &status_reg);
-+        if (status_reg)
-+                dev_dbg(tps->dev, "status now: 0x%X\n", status_reg);
++	tps65217_reg_read(tps, TPS65217_REG_INT, &int_reg);
++	tps65217_reg_read(tps, TPS65217_REG_STATUS, &status_reg);
++	if (status_reg)
++		dev_dbg(tps->dev, "status now: 0x%X\n", status_reg);
 +
-+        if (!int_reg)
-+                return IRQ_NONE;
++	if (!int_reg)
++		return IRQ_NONE;
 +
-+        if (int_reg & TPS65217_INT_PBI) {
-+                /* Handle push button */
-+                dev_dbg(tps->dev, "power button status change\n");
-+                input_report_key(tps->pwr_but, KEY_POWER,
-+                                status_reg & TPS65217_STATUS_PB);
-+                input_sync(tps->pwr_but);
-+        }
-+        if (int_reg & TPS65217_INT_ACI) {
-+                /* Handle AC power status change */
-+                dev_dbg(tps->dev, "AC power status change\n");
-+                /* Press KEY_POWER when AC not present */
-+                input_report_key(tps->pwr_but, KEY_POWER,
-+                                ~status_reg & TPS65217_STATUS_ACPWR);
-+                input_sync(tps->pwr_but);
-+        }
-+        if (int_reg & TPS65217_INT_USBI) {
-+                /* Handle USB power status change */
-+                dev_dbg(tps->dev, "USB power status change\n");
-+        }
++	if (int_reg & TPS65217_INT_PBI) {
++		/* Handle push button */
++		dev_dbg(tps->dev, "power button status change\n");
++		input_report_key(tps->pwr_but, KEY_POWER,
++				status_reg & TPS65217_STATUS_PB);
++		input_sync(tps->pwr_but);
++	}
++	if (int_reg & TPS65217_INT_ACI) {
++		/* Handle AC power status change */
++		dev_dbg(tps->dev, "AC power status change\n");
++		/* Press KEY_POWER when AC not present */
++		input_report_key(tps->pwr_but, KEY_POWER,
++				~status_reg & TPS65217_STATUS_ACPWR);
++		input_sync(tps->pwr_but);
++	}
++	if (int_reg & TPS65217_INT_USBI) {
++		/* Handle USB power status change */
++		dev_dbg(tps->dev, "USB power status change\n");
++	}
 +
-+        return IRQ_HANDLED;
++	return IRQ_HANDLED;
 +}
 +
 +static int tps65217_probe_pwr_but(struct tps65217 *tps)
 +{
 +	int ret;
-+        unsigned int int_reg;
++	unsigned int int_reg;
 +
 +	tps->pwr_but = devm_input_allocate_device(tps->dev);
 +	if (!tps->pwr_but) {
@@ -109,7 +128,7 @@ index b8f4864..818f2cd 100644
  static int tps65217_probe(struct i2c_client *client,
  				const struct i2c_device_id *ids)
  {
-@@ -160,10 +239,13 @@ static int tps65217_probe(struct i2c_client *client,
+@@ -183,10 +263,13 @@ static int tps65217_probe(struct i2c_client *client,
  	unsigned int version;
  	unsigned long chip_id = ids->driver_data;
  	const struct of_device_id *match;
@@ -124,7 +143,7 @@ index b8f4864..818f2cd 100644
  		match = of_match_device(tps65217_of_match, &client->dev);
  		if (!match) {
  			dev_err(&client->dev,
-@@ -171,8 +253,31 @@ static int tps65217_probe(struct i2c_client *client,
+@@ -194,8 +277,31 @@ static int tps65217_probe(struct i2c_client *client,
  			return -EINVAL;
  		}
  		chip_id = (unsigned long)match->data;
@@ -157,7 +176,7 @@ index b8f4864..818f2cd 100644
  	}
  
  	if (!chip_id) {
-@@ -196,6 +301,18 @@ static int tps65217_probe(struct i2c_client *client,
+@@ -219,6 +325,18 @@ static int tps65217_probe(struct i2c_client *client,
  		return ret;
  	}
  
@@ -177,21 +196,13 @@ index b8f4864..818f2cd 100644
  			      ARRAY_SIZE(tps65217s), NULL, 0, NULL);
  	if (ret < 0) {
 diff --git a/include/linux/mfd/tps65217.h b/include/linux/mfd/tps65217.h
-index 290762f..b138fa3 100644
+index 4c80913..06e3eb6 100644
 --- a/include/linux/mfd/tps65217.h
 +++ b/include/linux/mfd/tps65217.h
-@@ -21,6 +21,7 @@
- #include <linux/i2c.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
-+#include <linux/input.h>
+@@ -260,6 +260,11 @@ struct tps65217 {
  
- /* TPS chip id list */
- #define TPS65217			0xF0
-@@ -256,6 +257,11 @@ struct tps65217 {
- 	struct regulator_desc desc[TPS65217_NUM_REGULATOR];
- 	struct regulator_dev *rdev[TPS65217_NUM_REGULATOR];
- 	struct regmap *regmap;
+ 	int write_status_off;
+ 	struct notifier_block reboot_notifier;
 +
 +	/* Power button and IRQ handling */
 +	int irq_gpio;	/* might not be set */
@@ -201,5 +212,5 @@ index 290762f..b138fa3 100644
  
  static inline struct tps65217 *dev_to_tps65217(struct device *dev)
 -- 
-1.8.2.1
+2.1.4
 

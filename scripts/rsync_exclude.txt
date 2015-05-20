@@ -1,0 +1,29 @@
+#SSH key
+/etc/dropbear/dropbear_rsa_host_key
+
+#DNS
+/etc/resolv.conf
+
+#testing
+/etc/masterimage
+
+#password config
+/etc/shadow
+
+#Static IP
+/var/lib/connman/ethernet*
+#autogen stuff
+/etc/volatile.cache
+/etc/dev.tar
+/etc/udev/cache.data
+/tmp
+/var/ntp.log
+
+#Other
+*.pyc
+
+#Home dir
+/home/root/*
+
+#user mount points
+/mnt/*

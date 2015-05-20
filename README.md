@@ -3,32 +3,41 @@ meta-yocto-bone
 
 Support layer for using Yocto and BeagleBone Black 
 
-
-As of Yocto 1.6, BeagleBone is officially 'supported'. However, out-of-the-box functionality is missing features, found in the official Angstrom and Debian images.
-
-This layer attempts to provide minimal feature-set to begin developing with BeagleBone and Yocto
+* Provides minimal feature-set to help developing with BeagleBone and Yocto
+* Extends TI Kernel feature-set to provide helpful additional connectivity options
+* Integrates select patches from https://github.com/RobertCNelson/ti-linux-kernel-dev.git, branch: ti-linux-3.14.y
 
 Provides
 ===============
-* Ethernet over USB (g_ether or RNDIS Gadget)  
-* LEDs  
-* Power button  
-* On-board EEPROM
-* CPU Frequency switching and fix to 1GHz
+* Ethernet over USB (g_ether or RNDIS Gadget) with ConnMan as DHCP server 
+* SystemD support 
+* BeagleBone.org gpio-of-helper driver  
+* BealgeBone.org PMIC power button support  
+* PCB board EEPROM  
+* SSHFS support 
 
 Usage
 ===============
-
-* add this layer to your conf/bblayers.conf file
+* bblayers.conf must include the following layers: meta-ti, meta-oe/meta-oe, meta-yocto-bone(this layer)
+* select "MACHINE = beaglebone" in conf/local.conf
+* select "DISTRO = poky-bone" in conf/local.conf
 * follow the steps from https://www.yoctoproject.org/downloads/bsps/daisy16/beaglebone
-* use 'bitbake core-image-minimal' for building the filesystem
+* use 'bitbake core-image-base' for building the filesystem
 
 Dependencies
 ===============
 
-This layer in its entirety depends on:
+This layer depends on:
 
 URI: git://git.yoctoproject.org/poky  
+branch: daisy  
+revision: HEAD  
+
+URI: git://git.yoctoproject.org/meta-ti
+branch: daisy  
+revision: HEAD  
+
+URI: https://github.com/openembedded/meta-oe.git 
 branch: daisy  
 revision: HEAD  
 

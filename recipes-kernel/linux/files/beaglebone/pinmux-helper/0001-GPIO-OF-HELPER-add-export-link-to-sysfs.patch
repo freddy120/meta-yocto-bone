@@ -1,0 +1,26 @@
+From c27e84a5424827c8602ba2459c5d01633d5c7db3 Mon Sep 17 00:00:00 2001
+From: Mikhail Zakharov <mikhail.zakharov@cognitivesystems.com>
+Date: Fri, 24 Apr 2015 12:56:47 -0400
+Subject: [PATCH] GPIO-OF-HELPER: add export link to sysfs
+
+---
+ drivers/gpio/gpio-of-helper.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpio/gpio-of-helper.c b/drivers/gpio/gpio-of-helper.c
+index 1c289b2..ae02d91 100644
+--- a/drivers/gpio/gpio-of-helper.c
++++ b/drivers/gpio/gpio-of-helper.c
+@@ -191,6 +191,9 @@ gpio_of_entry_create(struct gpio_of_helper_info *info,
+ 		goto err_bad_node;
+ 	}
+ 
++  /* create a sysfs link to an exported GPIO node */
++	gpio_export_link(dev, name, gpio);
++
+ 	irq = -1;
+ 	irq_flags = 0;
+ 
+-- 
+1.9.1
+
