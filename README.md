@@ -4,13 +4,13 @@ meta-yocto-bone
 Support layer for using Yocto and BeagleBone Black 
 
 * Provides minimal feature-set to help developing with BeagleBone and Yocto
-* Extends TI Kernel feature-set to provide helpful additional connectivity options
 * Integrates select patches from https://github.com/RobertCNelson/ti-linux-kernel-dev.git, branch: ti-linux-3.14.y
 
 Provides
 ===============
 * Ethernet over USB (g_ether or RNDIS Gadget) with ConnMan as DHCP server 
 * SystemD support 
+* Linux TI Kernel support
 * BeagleBone.org gpio-of-helper driver  
 * BealgeBone.org PMIC power button support  
 * PCB board EEPROM  
